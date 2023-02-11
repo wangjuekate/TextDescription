@@ -8,8 +8,12 @@ import json
 import time
 from pymongo import MongoClient
 
+import tqdm                                                                                                   
+import numpy as np
+import pandas as pd
 import concurrent.futures
-import threading
+import multiprocessing
+num_processes = multiprocessing.cpu_count()
 
 def caldistance(corpusa, corpusb,dicta, dictb ):
     listworda =pd.DataFrame()
@@ -67,11 +71,10 @@ print(test.iloc[1])
 
 
 #set up paralle process
-def extract(test):
-    for index, row in test.iterrows():
-        appid = [row['appID']]
-        exemplarid =  [row['exemplarID']]
-        month = row['month']
+def extract(appid,exemplarid,month):
+        appid = [appid]
+        exemplarid =  [exemplarid]
+        month = month
         try: 
             aside= allappdescrip[(allappdescrip['appId'].isin(appid)) &  (allappdescrip['month']==month)]
             print(aside)
@@ -82,22 +85,14 @@ def extract(test):
             corpusb = bside.iloc[0,1]
             dictb = bside.iloc[0,2]
             distance = caldistance(corpusa, corpusb,dicta, dictb )
-            test.loc[index, 'distance' ] =  distance
-            print(distance)
+            return(distance)
+   
         except:
-            test.loc[index, 'distance' ] =  0
-        main= pd.concat([main,monthdata],axis =0)
-
-# if __name__ == '__main__':
-def set_up_threads(test):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        output = executor.map(extract,test)
-        executor.shutdown(wait=True)
-    
+            return(0)
 
 #Initializing primary DataFrame
-if __name__ == "__main__":   
-    main = pd.DataFrame()
-    set_up_threads(test)
+if __name__ == "__main__":
+    with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
+        test['distance'] = list(tqdm.tqdm(pool.map(extract, test['appID'], test['exemplarid'],test['month'], chunksize=10), total=df.shape[0]))
     namefile = "test"+str(i)
-    main.to_csv('~/namefile.csv', sep=',',index=False)
+    test.to_csv('~/'+namefile+'.csv', sep=',',index=False)
