@@ -49,11 +49,11 @@ item_details = collection.find()
 allmonthlydata = pd.DataFrame(item_details)
 #get appdescriptions
 monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist)]
-monthdata = monthdata[['appId','corpus','dictionary',i]]
+monthdata = monthdata[['appId','corpus','dictionary','month']]
 allappdescrip = pd.concat([allappdescrip,monthdata],axis =0)
 
 monthdata= allmonthlydata[allmonthlydata['appId'].isin(exemplarid)]
-monthdata = monthdata[['appId','corpus','dictionary',i]]
+monthdata = monthdata[['appId','corpus','dictionary','month']]
 exemplardata = pd.concat([exemplardata,monthdata],axis =0)
 
 print(exemplardata['month'].value_counts())
