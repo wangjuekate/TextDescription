@@ -40,7 +40,7 @@ for i in range(1,13,1):
     month = month[['appId','corpus','dictionary','month']]
     exemplardata = pd.concat([exemplardata,month],axis =0)
 
-
+print(exemplardata['month'].value_counts())
 
 def caldistance(corpusa, corpusb,dicta, dictb ):
     listworda =pd.DataFrame()
@@ -80,5 +80,4 @@ for index, row in panelafterincumbent.iterrows():
     except: 
         panelafterincumbent.loc[index, 'distance' ] =  0
 
-panelafterincumbent.to_csv('~/ExemplarincumbentDID0210.csv', 
-sep=',',index=False)
+panelafterincumbent.to_csv('~/ExemplarincumbentDID0210.csv', sep=',',index=False)
