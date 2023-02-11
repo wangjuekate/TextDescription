@@ -67,7 +67,7 @@ print(test.iloc[1])
 
 
 #set up paralle process
-def extract():
+def extract(test):
     for index, row in test.iterrows():
         appid = [row['appID']]
         exemplarid =  [row['exemplarID']]
