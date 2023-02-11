@@ -42,7 +42,7 @@ dbname = client['gplayall']
 
 allappdescrip = pd.DataFrame()
 exemplardata = pd.DataFrame()
-i=5
+i=2
 namedata = 'moredescribe'+str(i)
 collection = dbname[namedata]
 item_details = collection.find()
@@ -70,12 +70,15 @@ for index, row in test.iterrows():
     month = row['month']
     try:
         aside= allappdescrip[(allappdescrip['appId'].isin(appid) &  allappdescrip['month']==month)]
+        print(aside)
         corpusa = aside.iloc[0,1]
         dicta = aside.iloc[0,2]
-        bside= allappdescrip[(allappdescrip['appId'].isin(exemplarid) &  allappdescrip['month']==month)]
+        bside= exemplardata[(exemplardata['appId'].isin(exemplarid) &  exemplardata['month']==month)]
+        print(bside)
         corpusb = bside.iloc[0,1]
         dictb = bside.iloc[0,2]
         distance = caldistance(corpusa, corpusb,dicta, dictb )
+        print(distance)
         test.loc[index, 'distance' ] =  distance
     except: 
         test.loc[index, 'distance' ] =  0
