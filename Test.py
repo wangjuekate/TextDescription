@@ -81,7 +81,7 @@ for index, row in test.iterrows():
         test.loc[index, 'distance' ] =  0
 
 
-namefile = "test"+i 
+namefile = "test"+str(i)
 
 test.to_csv('~/namefile.csv', 
 sep=',',index=False)
