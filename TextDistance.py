@@ -11,7 +11,7 @@ import concurrent.futures
 from pymongo import MongoClient
 
 
-panelafterincumbent = pd.read_csv("/Users/jjw6286/Nextcloud/AppReposion_Wenpin/TopicanalysesMonthly/ExemplarincumbentpanelDID_0130.csv",
+panelafterincumbent = pd.read_csv("~/ExemplarincumbentpanelDID_0130.csv",
 sep=",")
 
 applist = panelafterincumbent['appID'].drop_duplicates()
@@ -40,16 +40,6 @@ for i in range(1,13,1):
     exemplardata = pd.concat([exemplardata,month],axis =0)
 
 
-print(exemplardata['month'].value_counts())
-
-https://stackoverflow.com/questions/69623895/pymongo-errors-cursornotfound-cursor-id-not-found
-cursor = col.find({}, no_cursor_timeout=True, batch_size=1)
-for x in cursor:
-  print(x)
-
-cursor.close()  # <- Don't forget to close the cursor
-
-
 
 def caldistance(corpusa, corpusb,dicta, dictb ):
     listworda =pd.DataFrame()
@@ -69,14 +59,7 @@ def caldistance(corpusa, corpusb,dicta, dictb ):
     distance = sum((total_merge['freq_x']- total_merge['freq_y'])**2)
     return(distance)
 
-#each app calculate the distance between app and exemplars
-print(panelafterincumbent.columns.values)
-'''['Unnamed: 0' 'X' 'Unnamed..0' 'scrapTime' 'mininstall' 'genreId_x'
- 'reviews_x' 'score' 'price' 'free' 'developerId' 'updated' 'month'
- 'appID' 'after' 'exemplarID' 'changemonth' 'newID' 'bridges' 'defense'
- 'allwords' 'bridging' 'defensing' 'allwordsfill' 'logreview' 'logbridge'
- 'logdefense' 'logmininstall' 'bridgedummy' 'defencedummy' 'dummyfree'
- 'reviews_y' 'genreId_y' 'substitue']'''
+
 
 
 for index, row in panelafterincumbent.iterrows():
@@ -95,5 +78,5 @@ for index, row in panelafterincumbent.iterrows():
     except: 
         panelafterincumbent.loc[index, 'distance' ] =  0
 
-panelafterincumbent.to_csv('/Users/jjw6286/Nextcloud/AppReposion_Wenpin/TopicanalysesMonthly/ExemplarincumbentDID0210.csv', 
+panelafterincumbent.to_csv('~/ExemplarincumbentDID0210.csv', 
 sep=',',index=False)
