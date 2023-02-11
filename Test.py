@@ -65,22 +65,22 @@ print(test.iloc[1])
 
 for index, row in test.iterrows():
     appid = [row['appID']]
-    print(appid)
     exemplarid =  [row['exemplarID']]
-    print(exemplarid)
     month = row['month']
-
-    aside= allappdescrip[(allappdescrip['appId'].isin(appid)) &  (allappdescrip['month']==month)]
-    print(aside)
-    corpusa = aside.iloc[0,1]
-    dicta = aside.iloc[0,2]
-    bside= allappdescrip[(allappdescrip['appId'].isin(exemplarid)) &  (allappdescrip['month']==month)]
-    print(bside)
-    corpusb = bside.iloc[0,1]
-    dictb = bside.iloc[0,2]
-    distance = caldistance(corpusa, corpusb,dicta, dictb )
-    test.loc[index, 'distance' ] =  distance
-    print(distance)
+    try: 
+        aside= allappdescrip[(allappdescrip['appId'].isin(appid)) &  (allappdescrip['month']==month)]
+        print(aside)
+        corpusa = aside.iloc[0,1]
+        dicta = aside.iloc[0,2]
+        bside= allappdescrip[(allappdescrip['appId'].isin(exemplarid)) &  (allappdescrip['month']==month)]
+        print(bside)
+        corpusb = bside.iloc[0,1]
+        dictb = bside.iloc[0,2]
+        distance = caldistance(corpusa, corpusb,dicta, dictb )
+        test.loc[index, 'distance' ] =  distance
+        print(distance)
+     except:
+        test.loc[index, 'distance' ] = 0
 
 namefile = "test"+str(i)
 
