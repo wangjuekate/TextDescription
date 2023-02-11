@@ -79,8 +79,8 @@ for index, row in test.iterrows():
         distance = caldistance(corpusa, corpusb,dicta, dictb )
         test.loc[index, 'distance' ] =  distance
         print(distance)
-     except:
-        test.loc[index, 'distance' ] = 0
+    except:
+        test.loc[index, 'distance' ] =  0
 
 namefile = "test"+str(i)
 
