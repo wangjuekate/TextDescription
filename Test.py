@@ -45,7 +45,7 @@ print(allmonthlydata['month'].value_counts())
 
 #get app list
 
-panelafterincumbent = pd.read_csv("/Users/jjw6286/Nextcloud/AppReposion_Wenpin/TopicanalysesMonthly/ExemplarincumbentpanelDID_0130.csv",
+panelafterincumbent = pd.read_csv("~/ExemplarincumbentpanelDID_0130.csv",
 sep=",")
 
 applist1 = panelafterincumbent['appID'].drop_duplicates()
