@@ -80,6 +80,7 @@ for index, row in test.iterrows():
     except: 
         test.loc[index, 'distance' ] =  0
 
+print(test['distance'])
 
 namefile = "test"+str(i)
 
