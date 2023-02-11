@@ -47,6 +47,8 @@ namedata = 'moredescribe'+str(i)
 collection = dbname[namedata]
 item_details = collection.find()
 allmonthlydata = pd.DataFrame(item_details)
+print(allmonthlydata.iloc[1])
+print(allmonthlydata['month'].value_counts())
 #get appdescriptions
 monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist)]
 monthdata = monthdata[['appId','corpus','dictionary','month']]
@@ -60,7 +62,7 @@ print(exemplardata['month'].value_counts())
 
 
 test = panelafterincumbent[panelafterincumbent['month']==i]
-
+print(test.iloc[1])
 
 for index, row in test.iterrows():
     appid = [row['appID']]
