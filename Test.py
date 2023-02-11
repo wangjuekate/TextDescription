@@ -33,44 +33,6 @@ def caldistance(corpusa, corpusb,dicta, dictb ):
     distance = sum((total_merge['freq_x']- total_merge['freq_y'])**2)
     return(distance)
 
-
-
-#access database
-
-client = MongoClient()
-dbname = client['gplayall']
-i=3
-namedata = 'moredescribe'+str(i)
-collection = dbname[namedata]
-item_details = collection.find()
-allmonthlydata = pd.DataFrame(item_details)
-print(allmonthlydata.iloc[1])
-print(allmonthlydata['month'].value_counts())
-
-#get app list
-
-panelafterincumbent = pd.read_csv("~/ExemplarincumbentpanelDID_0130.csv",
-sep=",")
-
-applist1 = panelafterincumbent['appID'].drop_duplicates()
-exemplarid = panelafterincumbent['exemplarID'].drop_duplicates()
-applist= applist1.values.tolist() + exemplarid.values.tolist()
-
-#get the description summarize: 
-allappdescrip = pd.DataFrame()
-monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist)]
-monthdata = monthdata[['appId','corpus','dictionary','month']]
-allappdescrip = pd.concat([allappdescrip,monthdata],axis =0)
-
-print(allappdescrip['month'].value_counts())
-
-#calculate
-
-test = panelafterincumbent[panelafterincumbent['month']==i]
-print(test.iloc[1])
-
-
-#set up paralle process
 def extract(appid,exemplarid,month):
         appid = [appid]
         exemplarid =  [exemplarid]
@@ -86,12 +48,49 @@ def extract(appid,exemplarid,month):
             dictb = bside.iloc[0,2]
             distance = caldistance(corpusa, corpusb,dicta, dictb )
             return(distance)
-   
+
         except:
             return(0)
 
-#Initializing primary DataFrame
-if __name__ == "__main__":
+#access database
+client = MongoClient()
+dbname = client['gplayall']
+
+
+for i in range(1,13,1):
+
+    namedata = 'moredescribe'+str(i)
+    collection = dbname[namedata]
+    item_details = collection.find()
+    allmonthlydata = pd.DataFrame(item_details)
+    print(allmonthlydata.iloc[1])
+    print(allmonthlydata['month'].value_counts())
+
+    #get app list
+
+    panelafterincumbent = pd.read_csv("~/ExemplarincumbentpanelDID_0130.csv",
+    sep=",")
+
+    applist1 = panelafterincumbent['appID'].drop_duplicates()
+    exemplarid = panelafterincumbent['exemplarID'].drop_duplicates()
+    applist= applist1.values.tolist() + exemplarid.values.tolist()
+
+    #get the description summarize: 
+    allappdescrip = pd.DataFrame()
+    monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist)]
+    monthdata = monthdata[['appId','corpus','dictionary','month']]
+    allappdescrip = pd.concat([allappdescrip,monthdata],axis =0)
+
+    print(allappdescrip['month'].value_counts())
+
+    #calculate
+
+    test = panelafterincumbent[panelafterincumbent['month']==i]
+    print(test.iloc[1])
+
+
+    #set up paralle process
+
     with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
         test['distance'] = list(tqdm.tqdm(pool.map(extract, test['appID'], test['exemplarID'],test['month'], chunksize=10), total=df.shape[0]))
     namefile = "test"+str(i)
