@@ -1,14 +1,15 @@
-from pymongo import MongoClient
+
 import pymongo
 import pandas as pd
-import threading
 from json import loads
 import numpy as np
 import math
 import json
 import time
-import concurrent.futures
 from pymongo import MongoClient
+
+import concurrent.futures
+import threading
 
 def caldistance(corpusa, corpusb,dicta, dictb ):
     listworda =pd.DataFrame()
@@ -28,11 +29,13 @@ def caldistance(corpusa, corpusb,dicta, dictb ):
     distance = sum((total_merge['freq_x']- total_merge['freq_y'])**2)
     return(distance)
 
+
+
 #access database
 
 client = MongoClient()
 dbname = client['gplayall']
-i=2
+i=3
 namedata = 'moredescribe'+str(i)
 collection = dbname[namedata]
 item_details = collection.find()
@@ -42,7 +45,7 @@ print(allmonthlydata['month'].value_counts())
 
 #get app list
 
-panelafterincumbent = pd.read_csv("~/ExemplarincumbentpanelDID_0130.csv",
+panelafterincumbent = pd.read_csv("/Users/jjw6286/Nextcloud/AppReposion_Wenpin/TopicanalysesMonthly/ExemplarincumbentpanelDID_0130.csv",
 sep=",")
 
 applist1 = panelafterincumbent['appID'].drop_duplicates()
@@ -63,27 +66,38 @@ test = panelafterincumbent[panelafterincumbent['month']==i]
 print(test.iloc[1])
 
 
-for index, row in test.iterrows():
-    appid = [row['appID']]
-    exemplarid =  [row['exemplarID']]
-    month = row['month']
-    try: 
-        aside= allappdescrip[(allappdescrip['appId'].isin(appid)) &  (allappdescrip['month']==month)]
-        print(aside)
-        corpusa = aside.iloc[0,1]
-        dicta = aside.iloc[0,2]
-        bside= allappdescrip[(allappdescrip['appId'].isin(exemplarid)) &  (allappdescrip['month']==month)]
-        print(bside)
-        corpusb = bside.iloc[0,1]
-        dictb = bside.iloc[0,2]
-        distance = caldistance(corpusa, corpusb,dicta, dictb )
-        test.loc[index, 'distance' ] =  distance
-        print(distance)
-    except:
-        test.loc[index, 'distance' ] =  0
+#set up paralle process
+def extract():
+    for index, row in test.iterrows():
+        appid = [row['appID']]
+        exemplarid =  [row['exemplarID']]
+        month = row['month']
+        try: 
+            aside= allappdescrip[(allappdescrip['appId'].isin(appid)) &  (allappdescrip['month']==month)]
+            print(aside)
+            corpusa = aside.iloc[0,1]
+            dicta = aside.iloc[0,2]
+            bside= allappdescrip[(allappdescrip['appId'].isin(exemplarid)) &  (allappdescrip['month']==month)]
+            print(bside)
+            corpusb = bside.iloc[0,1]
+            dictb = bside.iloc[0,2]
+            distance = caldistance(corpusa, corpusb,dicta, dictb )
+            test.loc[index, 'distance' ] =  distance
+            print(distance)
+        except:
+            test.loc[index, 'distance' ] =  0
+        main= pd.concat([main,monthdata],axis =0)
 
-namefile = "test"+str(i)
+# if __name__ == '__main__':
+def set_up_threads(test):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        output = executor.map(extract,test)
+        executor.shutdown(wait=True)
+    
 
-test.to_csv('~/namefile.csv', 
-sep=',',index=False)
-
+#Initializing primary DataFrame
+if __name__ == "__main__":   
+    main = pd.DataFrame()
+    set_up_threads(test)
+    namefile = "test"+str(i)
+    main.to_csv('~/namefile.csv', sep=',',index=False)
