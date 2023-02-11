@@ -26,6 +26,7 @@ dbname = client['gplayall']
 allappdescrip = pd.DataFrame()
 exemplardata = pd.DataFrame()
 for i in range(1,13,1):
+    print(i)
     namedata = 'moredescribe'+str(i)
     collection = dbname[namedata]
     item_details = collection.find()
@@ -61,11 +62,12 @@ def caldistance(corpusa, corpusb,dicta, dictb ):
 
 
 
-
 for index, row in panelafterincumbent.iterrows():
     appid = [row['appID']]
+    
     exemplarid =  [row['exemplarID']]
     month = row['month']
+    print(month)
     try:
         aside= allappdescrip[(allappdescrip['appId'].isin(appid) &  allappdescrip['month']==month)]
         corpusa = aside.iloc[0,1]
