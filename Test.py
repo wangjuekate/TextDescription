@@ -93,6 +93,6 @@ def extract(appid,exemplarid,month):
 #Initializing primary DataFrame
 if __name__ == "__main__":
     with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
-        test['distance'] = list(tqdm.tqdm(pool.map(extract, test['appID'], test['exemplarid'],test['month'], chunksize=10), total=df.shape[0]))
+        test['distance'] = list(tqdm.tqdm(pool.map(extract, test['appID'], test['exemplarID'],test['month'], chunksize=10), total=df.shape[0]))
     namefile = "test"+str(i)
     test.to_csv('~/'+namefile+'.csv', sep=',',index=False)
