@@ -61,6 +61,7 @@ def caldistance(corpusa, corpusb,dicta, dictb ):
     return(distance)
 
 
+    
 
 for index, row in panelafterincumbent.iterrows():
     appid = [row['appID']]
