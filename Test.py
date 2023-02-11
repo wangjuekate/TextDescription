@@ -57,7 +57,7 @@ client = MongoClient()
 dbname = client['gplayall']
 
 
-for i in range(1,13,1):
+for i in range(2,13,1):
 
     namedata = 'moredescribe'+str(i)
     collection = dbname[namedata]
