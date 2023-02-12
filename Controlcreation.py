@@ -11,87 +11,99 @@ from pymongo import MongoClient
 import tqdm                                                                                                   
 import numpy as np
 import pandas as pd
-import concurrent.futures
-import multiprocessing
-num_processes = multiprocessing.cpu_count()
 
-def caldistance(corpusa, corpusb,dicta, dictb ):
-    listworda =pd.DataFrame()
-    for id, freq in corpusa:
-        itemdf = pd.DataFrame([dicta[id],freq])
-        listworda = pd.concat([listworda, itemdf.transpose()],axis =0)
-    listworda.columns =['word','freq']
 
-    listwordb =pd.DataFrame()
-    for id, freq in corpusb:
-        itemdf = pd.DataFrame([dictb[id],freq])
-        listwordb = pd.concat([listwordb, itemdf.transpose()],axis =0)
-    listwordb.columns=['word','freq']
+panelafterincumbent= pd.read_csv("~/Fulldataset.csv",
+sep=",")
+applist= panelafterincumbent['appID'].drop_duplicates()
+def keepone(input):
+    return(input.iloc[0])
 
-    total_merge = listworda.merge(listwordb, on='word', how='outer', indicator=True)
-    total_merge= total_merge.fillna(0)
-    distance = sum((total_merge['freq_x']- total_merge['freq_y'])**2)
-    return(distance)
-
-def extract(appid,exemplarid,month):
-        appid = [appid]
-        exemplarid =  [exemplarid]
-        month = month
-        try: 
-            aside= allappdescrip[(allappdescrip['appId'].isin(appid)) &  (allappdescrip['month']==month)]
-            print(aside)
-            corpusa = aside.iloc[0,1]
-            dicta = aside.iloc[0,2]
-            bside= allappdescrip[(allappdescrip['appId'].isin(exemplarid)) &  (allappdescrip['month']==month)]
-            print(bside)
-            corpusb = bside.iloc[0,1]
-            dictb = bside.iloc[0,2]
-            distance = caldistance(corpusa, corpusb,dicta, dictb )
-            return(distance)
-
-        except:
-            return(0)
-
-#access database
+#select from each one and get the relevant
 client = MongoClient()
 dbname = client['gplayall']
-
+allappdescrip = pd.DataFrame()
 
 for i in range(1,13,1):
-
-    namedata = 'moredescribe'+str(i)
+    namedata = 'basicinfo'+str(i)
     collection = dbname[namedata]
     item_details = collection.find()
     allmonthlydata = pd.DataFrame(item_details)
-    print(allmonthlydata.iloc[1])
-    print(allmonthlydata['month'].value_counts())
-
-    #get app list
-
-    panelafterincumbent = pd.read_csv("~/ExemplarincumbentpanelDID_0130.csv",
-    sep=",")
-
-    applist1 = panelafterincumbent['appID'].drop_duplicates()
-    exemplarid = panelafterincumbent['exemplarID'].drop_duplicates()
-    applist= applist1.values.tolist() + exemplarid.values.tolist()
-
-    #get the description summarize: 
-    allappdescrip = pd.DataFrame()
     monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist)]
-    monthdata = monthdata[['appId','corpus','dictionary','month']]
+    monthdata = monthdata.groupby(['appId','month']).apply(keepone)
+    monthdata.drop_duplicates(keep='first',ignore_index=True)
     allappdescrip = pd.concat([allappdescrip,monthdata],axis =0)
-
-    print(allappdescrip['month'].value_counts())
-
-    #calculate
-
-    test = panelafterincumbent[panelafterincumbent['month']==i]
-    print(test.iloc[1])
+    allappdescrip['month']=i
 
 
-    #set up paralle process
+#calculate with group by
+applevel = allappdescrip[['appId','month','size','contentRating']]
+test = panelafterincumbent
 
-    with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
-        test['distance'] = list(tqdm.tqdm(pool.map(extract, test['appID'], test['exemplarID'],test['month'], chunksize=10), total=test.shape[0]))
-    namefile = "test"+str(i)
-    test.to_csv('~/'+namefile+'.csv', sep=',',index=False)
+exemplardata = pd.read_csv('~/Exemplarchanges.csv',
+sep=",")
+
+exemplardata1 =exemplardata[['appID','startgenre','developerId']]
+print(exemplardata1.iloc[1])
+test1 = test.merge(exemplardata1, left_on = ["exemplarID"], right_on = ["appID"],how ="left")
+test1 = test1.drop(['appID_y','genreId_y', 'reviews_y','developerId_x'],axis =1)
+
+test1 = test1.rename({'appID_x':'appID','genreId_x':'genreId',
+'reviews_x':'reviews','developerId_y':'developerId'},axis =1)
+
+
+test1 = test1.merge(applevel, left_on = ["appID","month"], right_on = ["appId","month"],how ="left")
+
+
+#developer set
+def developer(input):
+    output = pd.DataFrame()
+    review = sum(input['reviews'])
+
+    developerid = input['developerId'].values.tolist()
+    month = input['month'].values.tolist()
+
+    test = pd.DataFrame([review,developerid[0],month[0]]).T
+    print(test)
+    output = pd.concat([output,test],axis =0)
+    return(output)
+
+getdeveloper = test1.groupby(['developerId','month']).apply(developer)
+getdeveloper = pd.DataFrame(getdeveloper)
+getdeveloper.reset_index(drop = True, inplace = True)
+print(getdeveloper)
+getdeveloper.columns =['developerper','developerId','month']
+test1.reset_index(drop = True, inplace = True)
+test1= test1.merge(getdeveloper, left_on = ["developerId","month"], right_on = ["developerId","month"],how ="left")
+
+
+
+
+def category(input):
+    output = pd.DataFrame()
+    numberentry = len(input.index)
+    categoryid = input['genreID'].values.tolist()
+    month = input['month'].values.tolist()
+    test = pd.DataFrame([numberentry ,categoryid[0],month[0]]).T
+    print(test)
+    output = pd.concat([output,test],axis =0)
+    return(output)
+
+getcategory = allappdescrip.groupby(['genreID','month']).apply(category)
+getcategory = pd.DataFrame(getcategory)
+getcategory.reset_index(drop = True, inplace = True)
+getcategory.columns =['numreviewcateogry','genreID','month']
+
+test1.reset_index(drop = True, inplace = True)
+test1 = test1.merge(getcategory, left_on = ["genreId","month"], right_on = ["genreID","month"],how ="left")
+
+
+#get the update time
+test1['update_date'] = pd.to_datetime(test1['updated'])
+test1['updatemonth'] = test1['update_date'].dt.month
+test1['updateyear'] = test1['update_date'].dt.year
+
+test1['updatestimelength'] = (2017- test1['updateyear'])*12+test1['month']- test1['updatemonth']
+
+test1.to_csv("~/Fulldatawithcontrol.csv",sep=',',index=False)
+
