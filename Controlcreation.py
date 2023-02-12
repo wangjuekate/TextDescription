@@ -13,8 +13,8 @@ import numpy as np
 import pandas as pd
 
 
-panelafterincumbent= pd.read_csv("~/Fulldataset.csv",
-sep=",")
+panelafterincumbent= pd.read_csv("~/Fulldataset.csv",sep=",")
+
 applist= panelafterincumbent['appID'].drop_duplicates()
 def keepone(input):
     return(input.iloc[0])
