@@ -32,6 +32,7 @@ for i in range(1,13,1):
     monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist)]
     monthdata = monthdata.groupby(['appId']).apply(keepone)
     monthdata.drop_duplicates(keep='first',ignore_index=True)
+    monthdata.reset_index(drop = True, inplace = True)
     allappdescrip = pd.concat([allappdescrip,monthdata],axis =0)
     allappdescrip['month']=i
 
@@ -45,9 +46,9 @@ sep=",")
 
 exemplardata1 =exemplardata[['appID','startgenre','developerId']]
 print(exemplardata1.iloc[1])
+
 test1 = test.merge(exemplardata1, left_on = ["exemplarID"], right_on = ["appID"],how ="left")
 test1 = test1.drop(['appID_y','genreId_y', 'reviews_y','developerId_x'],axis =1)
-
 test1 = test1.rename({'appID_x':'appID','genreId_x':'genreId',
 'reviews_x':'reviews','developerId_y':'developerId'},axis =1)
 
