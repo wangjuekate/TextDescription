@@ -30,7 +30,7 @@ for i in range(1,13,1):
     item_details = collection.find()
     allmonthlydata = pd.DataFrame(item_details)
     monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist)]
-    monthdata = monthdata.groupby(['appId','month']).apply(keepone)
+    monthdata = monthdata.groupby(['appId']).apply(keepone)
     monthdata.drop_duplicates(keep='first',ignore_index=True)
     allappdescrip = pd.concat([allappdescrip,monthdata],axis =0)
     allappdescrip['month']=i
