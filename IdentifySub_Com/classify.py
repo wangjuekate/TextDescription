@@ -101,12 +101,12 @@ if __name__ == '__main__':
     alltoclassify =alltoclassify.head(10).fillna('') 
     with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
         output= tqdm.tqdm(pool.map(classify, alltoclassify['comments_x'],alltoclassify['comments_y'],alltoclassify['description_x'],alltoclassify['description_y'], chunksize=10))
-        print(output)
-        prediction = list(output)
-        print(prediction)
-        score = output[1]
-        alltoclassify['label']= list(prediction, total=alltoclassify.shape[0])
-        alltoclassify['score'] = list(score, total=alltoclassify.shape[0])
+   
+        output = list(output, total=alltoclassify.shape[0])
+        output = pd.DataFrame(output)
+        print(output.iloc[,0])
+        alltoclassify['label']= output.iloc[,0]
+        alltoclassify['score'] = output.iloc[,1]
     alltoclassify.to_csv("~/TextDescription/IdentifySub_Com/classifiedfile.csv",sep=",", index= False)                     
                      
                           
