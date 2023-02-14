@@ -75,6 +75,10 @@ def classify(document):
 
     return doc, scores, word_alphas, sentence_alphas, words_in_each_sentence
 
+def visualize_attention(doc, scores, word_alphas, sentence_alphas, words_in_each_sentence):
+    score, prediction = scores.max(dim=0)
+    print(prediction.item())
+    print(score.item())
 
 if __name__ == '__main__':
     document = 'How do computers work? I have a CPU I want to use. But my keyboard and motherboard do not help.\n\n You can just google how computers work. Honestly, its easy.'
@@ -83,4 +87,4 @@ if __name__ == '__main__':
     document = "I want to tell you something important. Get into the stock market and investment funds. Make some money so you can buy yourself some yogurt."
    # document = "You know what's wrong with this country? republicans and democrats. always at each other's throats\n There's no respect, no bipartisanship."
     output = classify(document)
-    print(output)
+    visualize_attention(output)
