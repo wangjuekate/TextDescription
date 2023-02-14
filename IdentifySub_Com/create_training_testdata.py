@@ -1,4 +1,14 @@
-
+from pymongo import MongoClient
+import pymongo
+import pandas as pd
+import threading
+from json import loads
+import numpy as np
+import math
+import json
+import time
+import concurrent.futures
+from pymongo import MongoClient
 
 codedsample= pd.read_csv("~/codingsubsticom_update.csv",sep=",")
 
