@@ -17,7 +17,10 @@ import pandas as pd
 #find pair of the apps
 
 panelafterincumbent= pd.read_csv("~/Fulldataset.csv",sep=",")
+
 pairedapp = panelafterincumbent[['appID','exemplarID']]
+
+print(pairedapp.iloc[1])
 
 pairedapp =pairedapp.drop_duplicates()
 
@@ -43,6 +46,7 @@ collection = dbname[namedata]
 item_details = collection.find()
 allmonthlydata = pd.DataFrame(item_details)
 
+print(allmonthlydata.iloc[1])
 #select the needed descriptions
 
 monthdata= allmonthlydata[allmonthlydata['appId'].isin(applist2)]
