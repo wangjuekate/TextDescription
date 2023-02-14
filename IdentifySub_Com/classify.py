@@ -77,7 +77,7 @@ def classify(document):
 
 def visualize_attention(doc, scores, word_alphas, sentence_alphas, words_in_each_sentence):
     score, prediction = scores.max(dim=0)
-    output = pd.DataFrame([prediction.item(),score.item()]
+    output = pd.DataFrame([prediction.item(),score.item()])
     return(output)   
 
 if __name__ == '__main__':    
