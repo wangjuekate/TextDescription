@@ -104,6 +104,7 @@ if __name__ == '__main__':
    
         output = list(output, total=alltoclassify.shape[0])
         output = pd.DataFrame(output)
+        print(output)
         print(output.iloc[,0])
         alltoclassify['label']= output.iloc[,0]
         alltoclassify['score'] = output.iloc[,1]
