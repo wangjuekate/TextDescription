@@ -96,7 +96,7 @@ if __name__ == '__main__':
     alltoclassify = pd.read_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify.csv",sep=",")
     alltoclassify =alltoclassify.head(10)                     
     for index, row in alltoclassify.iterrows():
-        document = row[2:].apply(".".join, axis=1)
+        document = pd.DataFrame(row[2:]).T.apply(".".join, axis=1)
         print(document)
         output = visualize_attention(*classify(document))
         print(output)
