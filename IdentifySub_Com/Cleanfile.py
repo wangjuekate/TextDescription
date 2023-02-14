@@ -33,7 +33,8 @@ def keepone(input):
 applist= samplelabel['appID'].values.tolist()
 applist2 = applist + samplelabel['exemplarID'].values.tolist()
 
-applist2 =applist2.drop_duplicates()
+applist2= list( dict.fromkeys(applist2) ) 
+
 
 
 i =1
