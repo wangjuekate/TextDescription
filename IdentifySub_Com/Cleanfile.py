@@ -62,4 +62,4 @@ samplelabel1 = samplelabel1.merge(monthdata, left_on ="exemplarID", right_on ="a
 samplelabel1.to_csv("~/codingsubsticom.csv", sep=",")
 #hand code to get the substitute and complements
 
-
+#1 represent substitute #2 represent complement #3 represents no relationship
