@@ -17,6 +17,11 @@ import tqdm
 import numpy as np
 import pandas as pd
 
+import concurrent.futures
+import multiprocessing
+num_processes = multiprocessing.cpu_count()
+
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load model
@@ -40,7 +45,8 @@ sent_tokenizer = PunktSentenceTokenizer()
 word_tokenizer = TreebankWordTokenizer()
 
 
-def classify(document):
+def classify(commentx, commenty,desx,desy):
+    document = commentx+commenty+desx+desy
     """
     Classify a document with the Hierarchial Attention Network (HAN).
 
@@ -84,22 +90,19 @@ def classify(document):
     word_alphas = word_alphas.squeeze(0)  # (n_sentences, max_sent_len_in_document)
     sentence_alphas = sentence_alphas.squeeze(0)  # (n_sentences)
     words_in_each_sentence = words_in_each_sentence.squeeze(0)  # (n_sentences)
-
-    return doc, scores, word_alphas, sentence_alphas, words_in_each_sentence
-
-def visualize_attention(doc, scores, word_alphas, sentence_alphas, words_in_each_sentence):
     score, prediction = scores.max(dim=0)
     output = [prediction.item(),score.item()]
     return(output)   
 
+
+
 if __name__ == '__main__':    
     alltoclassify = pd.read_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify_des.csv",sep=",")
-    alltoclassify =alltoclassify.fillna('')                
-    for index, row in alltoclassify.iterrows():
-        document = row['comments_x'] + row['comments_y']+row['description_x']+row['description_y']
-        output = visualize_attention(*classify(document))
-        alltoclassify.loc[index,'label']= output[0]
-        alltoclassify.loc[index,'score']= output[1]
+    alltoclassify =alltoclassify.head(10).fillna('') 
+    with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
+        output = list(tqdm.tqdm(pool.map(classify, row['comments_x'],row['comments_y'],row['description_x'],row['description_y'], chunksize=10), total=alltoclassify.shape[0]))
+        alltoclassify['label'] = output[0]
+        alltoclassify['score'] = output[1]
     alltoclassify.to_csv("~/TextDescription/IdentifySub_Com/classifiedfile.csv",sep=",", index= False)                     
                      
                           
