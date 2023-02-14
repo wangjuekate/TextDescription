@@ -97,8 +97,7 @@ def classify(commentx, commenty,desx,desy):
 
 if __name__ == '__main__':    
     alltoclassify = pd.read_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify_des.csv",sep=",")
-    alltoclassify =alltoclassify.head(10)
-    alltoclassify =alltoclassify.head(10).fillna('') 
+    alltoclassify =alltoclassify.fillna('') 
     with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
         output= tqdm.tqdm(pool.map(classify, alltoclassify['comments_x'],alltoclassify['comments_y'],alltoclassify['description_x'],alltoclassify['description_y'], chunksize=10))
    
