@@ -13,7 +13,7 @@ import pandas as pd
 
 #merge with the descriptions as well
 
-pairedapp= pd.read_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify.csv",sep=",",index=False)
+pairedapp= pd.read_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify.csv",sep=",")
 
 print(len(pairedapp.index))
 
