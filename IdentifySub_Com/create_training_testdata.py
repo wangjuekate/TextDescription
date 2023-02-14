@@ -33,6 +33,10 @@ commentcombine.reset_index(drop = True, inplace = True)
 
 print(commentcombine.iloc[1])
 
+commentcombine.columns = ['_id','comments']
+
+#%%
+
 print(len(codedsample.index))
 codedsample = codedsample.merge(commentcombine,left_on ="appID", right_on ="_id", how="left")
 codedsample = codedsample.merge(commentcombine,left_on ="exemplarID", right_on ="_id", how="left")
@@ -44,3 +48,4 @@ test = codedsample.tail(1000)
 
 train.to_csv("~/TextDescription/IdentifySub_Com/datatraining/train.csv", sep=",")
 test.to_csv("~/TextDescription/IdentifySub_Com/datatraining/test.csv", sep=",")
+
