@@ -4,7 +4,6 @@ from utils1 import preprocess, rev_label_map
 import json
 import os
 from nltk.tokenize import PunktSentenceTokenizer, TreebankWordTokenizer
-from PIL import Image, ImageDraw, ImageFont
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
