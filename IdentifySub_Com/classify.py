@@ -102,7 +102,7 @@ if __name__ == '__main__':
     with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
         output= tqdm.tqdm(pool.map(classify, alltoclassify['comments_x'],alltoclassify['comments_y'],alltoclassify['description_x'],alltoclassify['description_y'], chunksize=10))
    
-        output = list(output, total=alltoclassify.shape[0])
+        output = list(output)
         output = pd.DataFrame(output)
         print(output)
         print(output.iloc[:,0])
