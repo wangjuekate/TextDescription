@@ -87,4 +87,4 @@ if __name__ == '__main__':
     document = "I want to tell you something important. Get into the stock market and investment funds. Make some money so you can buy yourself some yogurt."
    # document = "You know what's wrong with this country? republicans and democrats. always at each other's throats\n There's no respect, no bipartisanship."
     output = classify(document)
-    visualize_attention(output)
+    visualize_attention(*output)
