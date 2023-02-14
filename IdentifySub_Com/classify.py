@@ -77,14 +77,19 @@ def classify(document):
 
 def visualize_attention(doc, scores, word_alphas, sentence_alphas, words_in_each_sentence):
     score, prediction = scores.max(dim=0)
-    print(prediction.item())
-    print(score.item())
+    output = pd.DataFrame([prediction.item(),score.item()]
+    return(output)   
 
-if __name__ == '__main__':
-    document = 'How do computers work? I have a CPU I want to use. But my keyboard and motherboard do not help.\n\n You can just google how computers work. Honestly, its easy.'
-    document = 'But think about it! It\'s so cool. Physics is really all about math. what feynman said, hehe'
-    document = "I think I'm falling sick. There was some indigestion at first. But now a fever is beginning to take hold."
-    document = "I want to tell you something important. Get into the stock market and investment funds. Make some money so you can buy yourself some yogurt."
-   # document = "You know what's wrong with this country? republicans and democrats. always at each other's throats\n There's no respect, no bipartisanship."
-    output = classify(document)
-    visualize_attention(*output)
+if __name__ == '__main__':    
+    alltoclassify = pd.read_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify.csv",sep=",")
+    alltoclassify =alltoclassify.head(10)                     
+    for index, row in alltoclassify.iterrows():
+        document = row[1:].apply(".".join, axis=1)
+        print(document)
+        output = visualize_attention(*classify(document))
+        print(output)
+        alltoclassify.loc[index,'label']= output[0]
+        alltoclassify.loc[index,'score']= output[1]
+    alltoclassify.to_csv("~/TextDescription/IdentifySub_Com/classifiedfile.csv",sep=",", index= False)                     
+                     
+                          
