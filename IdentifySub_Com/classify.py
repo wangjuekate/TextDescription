@@ -91,8 +91,7 @@ def classify(commentx, commenty,desx,desy):
     sentence_alphas = sentence_alphas.squeeze(0)  # (n_sentences)
     words_in_each_sentence = words_in_each_sentence.squeeze(0)  # (n_sentences)
     score, prediction = scores.max(dim=0)
-    output = [prediction.item(),score.item()]
-    return(output)   
+    return  prediction.item(), score.item()
 
 
 
