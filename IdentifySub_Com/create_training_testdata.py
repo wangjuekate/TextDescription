@@ -34,8 +34,8 @@ commentcombine.reset_index(drop = True, inplace = True)
 print(commentcombine.iloc[1])
 
 print(len(codedsample.index))
-codedsample = codedsample.merge(commentcombine,left_on ="appID", right_on ="appId", how="left")
-codedsample = codedsample.merge(commentcombine,left_on ="exemplarID", right_on ="appId", how="left")
+codedsample = codedsample.merge(commentcombine,left_on ="appID", right_on ="_id", how="left")
+codedsample = codedsample.merge(commentcombine,left_on ="exemplarID", right_on ="_id", how="left")
 print(len(codedsample.index))
 
 
