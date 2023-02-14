@@ -43,8 +43,8 @@ codedsample = codedsample.merge(commentcombine,left_on ="exemplarID", right_on =
 print(len(codedsample.index))
 
 
-train = codedsample.head(1000)
-test = codedsample.tail(1000)
+train = pd.DataFrame(codedsample.head(1000))
+test =pd.DataFrame( codedsample.tail(1000))
 
 train.to_csv("~/TextDescription/IdentifySub_Com/datatraining/train.csv", sep=",")
 test.to_csv("~/TextDescription/IdentifySub_Com/datatraining/test.csv", sep=",")
