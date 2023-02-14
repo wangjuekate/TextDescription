@@ -29,8 +29,7 @@ accs = AverageMeter()  # accuracies
 # Evaluate in batches
 for i, (documents, sentences_per_document, words_per_sentence, labels) in enumerate(
         tqdm(test_loader, desc='Evaluating')):
-    
-
+    print(i)
     #documents = documents.to(device)  # (batch_size, sentence_limit, word_limit)
     sentences_per_document = sentences_per_document.squeeze(1).to(device)  # (batch_size)
     words_per_sentence = words_per_sentence.to(device)  # (batch_size, sentence_limit)
