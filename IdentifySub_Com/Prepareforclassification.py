@@ -51,5 +51,7 @@ pairedapp = pairedapp.merge(commentcombine,left_on ="exemplarID", right_on ="_id
 
 print(pairedapp.iloc[1])
 
+
+
 pairedapp.to_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify.csv",sep=",",index=False)
 
