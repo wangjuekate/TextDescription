@@ -100,10 +100,10 @@ if __name__ == '__main__':
     alltoclassify =alltoclassify.head(10)
     alltoclassify =alltoclassify.head(10).fillna('') 
     with concurrent.futures.ProcessPoolExecutor(num_processes) as pool:
-        output= tqdm.tqdm(pool.map(classify, alltoclassify['comments_x'],alltoclassify['comments_y'],
-                                               alltoclassify['description_x'],alltoclassify['description_y'], chunksize=10))
+        output= tqdm.tqdm(pool.map(classify, alltoclassify['comments_x'],alltoclassify['comments_y'],alltoclassify['description_x'],alltoclassify['description_y'], chunksize=10))
         print(output)
-        prediction = output[0]
+        prediction = list(output)
+        print(prediction)
         score = output[1]
         alltoclassify['label']= list(prediction, total=alltoclassify.shape[0])
         alltoclassify['score'] = list(score, total=alltoclassify.shape[0])
