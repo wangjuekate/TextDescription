@@ -94,12 +94,10 @@ def visualize_attention(doc, scores, word_alphas, sentence_alphas, words_in_each
 
 if __name__ == '__main__':    
     alltoclassify = pd.read_csv("~/TextDescription/IdentifySub_Com/datatraining/Alltoclassify_des.csv",sep=",")
-    alltoclassify =alltoclassify.head(10)                     
+    alltoclassify =alltoclassify                
     for index, row in alltoclassify.iterrows():
         document = row['comments_x'] + row['comments_y']+row['description_x']+row['description_y']
-        print(document)
         output = visualize_attention(*classify(document))
-        print(output)
         alltoclassify.loc[index,'label']= output[0]
         alltoclassify.loc[index,'score']= output[1]
     alltoclassify.to_csv("~/TextDescription/IdentifySub_Com/classifiedfile.csv",sep=",", index= False)                     
